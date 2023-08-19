@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.1/redux.js"></script>
+    <link rel="stylesheet" href="./02-without-redux.css" />
+    <title>5.1 Redux 적용: store 생성</title>
+  </head>
+  <body>
+    <div id="red"></div>
+    <div id="blue"></div>
+    <div id="green"></div>
+    <script>
+      // **** 2. Reducer 생성 (e.g. 통장(store안의 state)에 작성하는 행위)
+      function reducer(state, action) {
+        console.log('state =>', state)
+        console.log('action =>', action)
+        if (state === undefined) return { color: 'yellow' }
+
+        var newState
+        if (action.type === 'CHANGE_COLOR') {
+          newState = Object.assign({}, state, { color: action.color })
+        }
+        return newState
+      }
+
+      // **** 1. Store 생성 (e.g. 은행 통장)
+      var store = Redux.createStore(reducer)
+
+      function red() {
+        // **** 3. getState (e.g. Store에 State 가져오기)
+        var state = store.getState()
+
+        // **** 4. dispatch : action을 reducer로 전달
+        document.querySelector('#red').innerHTML = `
+          <div class="container" id="component_red" style="background-color:${state.color}">
+            <h1>red</h1>
+            <input
+              type="button"
+              value="fire"
+              onclick="
+                store.dispatch({type: 'CHANGE_COLOR', color: 'red'})
+              "
+            />
+          </div>
+      `
+      }
+
+      // **** 5. subscribe (e.g. dispatch를 할때마다 red()를 호출)
+      // subscribe에 render를 등록 (여기서 render는 red()함수)
+      store.subscribe(red)
+      red()
+
+      // ******** 새로운 블루
+      function blue() {
+        var state = store.getState()
+        document.querySelector('#blue').innerHTML = `
+          <div class="container" id="component_blue" style="background-color:${state.color}">
+            <h1>blue</h1>
+            <input
+              type="button"
+              value="fire"
+              onclick="
+                store.dispatch({type: 'CHANGE_COLOR', color: 'blue'})
+              "
+            />
+          </div>
+      `
+      }
+      store.subscribe(blue)
+      blue()
+
+      // ******** 새로운 그린
+      function green() {
+        var state = store.getState()
+        document.querySelector('#green').innerHTML = `
+          <div class="container" id="component_green" style="background-color:${state.color}">
+            <h1>green</h1>
+            <input
+              type="button"
+              value="fire"
+              onclick="
+                store.dispatch({type: 'CHANGE_COLOR', color: 'green'})
+              "
+            />
+          </div>
+      `
+      }
+      store.subscribe(green)
+      green()
+    </script>
+  </body>
+</html>
